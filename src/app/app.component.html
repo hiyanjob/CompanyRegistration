@@ -1,0 +1,67 @@
+<form [formGroup]="EmployeeForm">
+
+  <div class="container">
+
+    <div class="row">
+      <h2>Company Details</h2>
+      <div class="col-sm" style="margin-top: 15px;">
+        <label>
+          Company Name: <input formControlName="company_name" class="input-medium" style="display: inline-block" />
+        </label>
+      </div>
+
+      <div class="col-sm" style="margin-top: 15px;">
+        <label>
+          Country : <input formControlName="country" />
+        </label>
+      </div>
+    </div>
+
+    <div claas="row">
+      <h3>Employee Details</h3>
+
+      <div formArrayName="employee_details" class="col-md-12">
+        <div *ngFor="let item of EmpDetailsAccessor.controls; let pointIndex=index" [formGroupName]="pointIndex">
+          <div class="col-md-3">
+            <label>
+              Employee Name: <input formControlName="emp_name" />
+            </label>
+          </div>
+          <div class="col-md-3">
+            <label>
+              Employee ID: <input formControlName="emp_id" />
+            </label>
+          </div>
+          <div class="col-md-3">
+            <label>
+              Employee Salary: <input formControlName="salary" />
+            </label>
+          </div>
+          <div class="col-md-3">
+            <label> Select Pic :
+              <input type="file" formControlName="pic" accept='image/*' #fileInput
+                (change)="preview(fileInput.files[0],pointIndex)" />
+            </label>
+          </div>
+
+          <div class="row col-md-12">
+            <div class="col-md-3">
+              <img [src]="multiImage[pointIndex].uri" height="80" *ngIf="imgURL">
+            </div>
+            <div class="col-md-3">
+              <button type="button" class="btn btn-danger" (click)="deleteEmp(pointIndex)">Delete Employee</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row col-md-12" style="margin-top: 10px;">
+          <button type="button" class="btn btn-primary" (click)="addEmp()" style="margin-left: 10px;">
+            Add Employee</button>
+          <button type="button" class="btn btn-success" (click)="submitData()"
+            style="margin-left: 10px;">Submit</button>
+        </div>
+      </div>
+    </div>
+    <!-- {{ this.EmployeeForm.value | json }} -->
+  </div>
+</form>
