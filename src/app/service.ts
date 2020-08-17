@@ -1,36 +1,40 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators'; 
+import { retry, catchError } from 'rxjs/operators';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class Service {
 
-    constructor(private http: HttpClient) { }
-    apiURL:string = '';
-     //: Observable<any>
-    uploadDatas(datas:any) {
-        console.log('the sending datas ==> ',datas);
-        // return this.http.post<any>(this.apiURL)
-        //  .pipe(
-        //   retry(2), // retry a failed request up to 2 times
-        //   catchError(this.handleError)
-        //  ); 
-      }
+  constructor(private http: HttpClient) { }
+  apiImageURL: string = 'http://34.231.199.190:8000/Imageupload';
+  headers = new HttpHeaders({
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJuYW1lIjoidGVzdCIsImVtYWlsIjoidGVzdGlkQGdtYWlsLmNvbSJ9LCJpYXQiOjE1OTc0OTE2MTR9.INImqePtMRqiYPGhXPuNN_FRZPEaWpZTDa4yRZtvo0c'
+  });
+  options = { headers: this.headers };
 
-      private handleError(errorResponse: HttpErrorResponse) {
-        if (errorResponse.error instanceof ErrorEvent) {
-          console.error('An error occurred:',   errorResponse.error.message);
-        } 
-       else {
-          console.error(
-            'Backend returned code ${errorResponse.status}, '+
-            'body was: ${errorResponse.error}');
-        }
-        return throwError(
-          'Error Occurred; please try again later.');
-      };
+  uploadImages(files: any): Observable<any> {
+    console.log('the sending datas ==> ', files);
+    return this.http.post<any>(this.apiImageURL, files, {
+      ...this.options,
+      // reportProgress: true,
+      // observe: 'events'
+    }).pipe(retry(2), catchError(this.handleError));
+  }
+
+  private handleError(errorResponse: HttpErrorResponse) {
+    if (errorResponse.error instanceof ErrorEvent) {
+      console.error('An error occurred:', errorResponse.error.message);
+    }
+    else {
+      console.error(
+        `'Backend returned code ${errorResponse.status}, ' +
+        'body was: ${errorResponse.error}'`);
+    }
+    return throwError(
+      'Error Occurred; please try again later.');
+  };
 
 }
